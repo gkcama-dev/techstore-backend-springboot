@@ -74,4 +74,9 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.save(order);
     }
+
+    @Override
+    public List<Order> getOrdersByCustomer(Long customerId) {
+        return orderRepository.findByCustomerId(customerId);
+    }
 }
