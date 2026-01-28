@@ -6,6 +6,8 @@ import com.techstore.api.repository.ProductRepository;
 import com.techstore.api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import java.util.List;
@@ -73,6 +75,38 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Product not found");
         }
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductDTO> searchProductsByName(String name) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+
+        // Product -> DTO List
+        return products.stream()
+                .map(product -> new ProductDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getStockQuantity()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<ProductDTO> searchProductsByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
+        List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
+
+        // Product -> DTO List
+        return products.stream()
+                .map(product -> new ProductDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getStockQuantity()
+                ))
+                .toList();
     }
 
     // Entity -> DTO Helper Method
