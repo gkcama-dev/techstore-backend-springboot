@@ -1,6 +1,7 @@
 package com.techstore.api.service.impl;
 
 import com.techstore.api.dto.ProductDTO;
+import com.techstore.api.exception.ResourceNotFoundException;
 import com.techstore.api.model.Product;
 import com.techstore.api.repository.ProductRepository;
 import com.techstore.api.service.ProductService;
@@ -48,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         //Find existing Product
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         //Update new Details
         existingProduct.setName(productDTO.getName());
@@ -72,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found");
+            throw new ResourceNotFoundException("Product not found with id: " + id);
         }
         productRepository.deleteById(id);
     }
